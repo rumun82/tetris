@@ -28,6 +28,17 @@ znaki = pygame.font.Font("nintendo-nes-font.ttf", (8 * N))
 background = pygame.image.load("background.bmp")
 background = pygame.transform.scale(background, wymiary)
 
+tetromino = [
+    [ // T
+        [[-1, 0], [0, 1], [0, 0], [1, 0]],
+        [[-1, 0], [0, 1], [0 ,0], [0, -1]],
+        [[-1, 0], [0, -1], [1, 0], [0, 0]],
+        [[0, -1], [0, 0], [1, 0], [0, 1]]
+    ], [ // J
+    
+    ]
+]
+
 klocek = False
 nastepny = randint(0, 6)
 pos_x = 5
@@ -58,7 +69,8 @@ while running:
         if event.type == pygame.KEYDOWN: // klawisze start
             if event.key == pygame.K_d:
                 D_nacisk = True
-            elif
+            elif event.key == pygame.K_a:
+                A_nacisk = True
             
     // klawisze stop
     screen.fill("black")
