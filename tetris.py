@@ -50,23 +50,30 @@ static = [
     ]
 
 while running:
+    A_nacisk = False
+    D_nacisk = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN: // klawisze start
+            if event.key == pygame.K_d:
+                D_nacisk = True
+            elif
+            
+    // klawisze stop
     screen.fill("black")
     screen.blit(background, (0, 0))
-
     scale = N
-    screen.blit(znaki.render(f"{min(999999,score):0>6}", False, (255, 255, 255)), (192 * scale, 66 * scale))
-    screen.blit(znaki.render(f"{level:0>2}", False, (255, 255, 255)), (208 * scale, 169 * scale))
-    screen.blit(znaki.render(f"{lines:0>3}", False, (255, 255, 255)), (153 * scale, 24 * scale))
+    screen.blit(znaki.render(f"{min(999999,score):0>6}", False, (255, 255, 255)), (192 * scale, 66 * scale)) // wynik
+    screen.blit(znaki.render(f"{level:0>2}", False, (255, 255, 255)), (208 * scale, 169 * scale)) // poziom
+    screen.blit(znaki.render(f"{lines:0>3}", False, (255, 255, 255)), (153 * scale, 24 * scale)) // linie
     for i in range(7):
-        screen.blit(znaki.render(f"{stat[i]:0>3}", False, (255, 0, 0)), (49 * scale, 95 * scale + 16 * scale * i))
+        screen.blit(znaki.render(f"{stat[i]:0>3}", False, (255, 0, 0)), (49 * scale, 95 * scale + 16 * scale * i)) // statsy
     for Y in range(20):
         for X in range(10):
             element = static[Y][X]
             paleta = level % 10
-            X1, Y1 = 95 * scale + X * scale * 8, 47 * scale + Y * scale * 8
+            X1, Y1 = 95 * scale + X * scale * 8, 47 * scale + Y * scale * 8 // pozycja w px
             kolor = pygame.Color(kolory_11(element, paleta))
             if element == 0:
                 pygame.draw.polygon(screen, "black", [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
@@ -83,9 +90,9 @@ while running:
                 pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
                 pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
     
-    pygame.display.flip()
+    pygame.display.flip() // update screen
 
-    clock.tick(60.0988)
+    clock.tick(60.0988) // frame rate
 
 pygame.quit()
 print(f"Wynik = {score:.0f}")
