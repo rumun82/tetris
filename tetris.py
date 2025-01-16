@@ -67,14 +67,16 @@ tetromino = [
     ]
 ]
 
-klocek = False
+klocek = True
 nastepny = randint(0, 6)
+rotation = 0
 pos_x = 5
 pos_y = 0
 score = 0
 level = 0
 lines = 0
 stat = [0, 0, 0, 0, 0, 0, 0]
+jaki_klocek = randint(0, 6)
 static = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -87,33 +89,60 @@ static = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #20
     ]
-
+soft_drop = False
 while running:
     A_nacisk = False
     D_nacisk = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN: // klawisze start
+        if event.type == pygame.KEYDOWN: # klawisze start
             if event.key == pygame.K_d:
                 D_nacisk = True
             elif event.key == pygame.K_a:
                 A_nacisk = True
-            
-    // klawisze stop
+            elif event.key == pygame.K_s:
+                soft_drop = True
+            elif event.key == pygame.K_l:
+                rotation += 1
+            elif event.key == pygame.K_j:
+                rotation -= 1
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_s:
+                soft_drop = False
+    
+    if not klocek:
+        jaki_klocek = nastepny
+        nastepny = randint(0, 6)
+    nacisk = D_nacisk + A_nacisk * 2
+    match nacisk:
+        case 0:
+            #nic
+        case 1:
+            D_nacisk = False # D
+            pos_x += 1
+        case 2:
+            A_nacisk = False # A
+            pos_x += 1
+        case 3:
+            A_nacisk = False # A + D
+            D_nacisk = False
+    
+    pos_y += 1
+    rotation %= 4
     screen.fill("black")
     screen.blit(background, (0, 0))
     scale = N
-    screen.blit(znaki.render(f"{min(999999,score):0>6}", False, (255, 255, 255)), (192 * scale, 66 * scale)) // wynik
-    screen.blit(znaki.render(f"{level:0>2}", False, (255, 255, 255)), (208 * scale, 169 * scale)) // poziom
-    screen.blit(znaki.render(f"{lines:0>3}", False, (255, 255, 255)), (153 * scale, 24 * scale)) // linie
+    screen.blit(znaki.render(f"{min(999999,score):0>6}", False, (255, 255, 255)), (192 * scale, 66 * scale)) # wynik
+    screen.blit(znaki.render(f"{level:0>2}", False, (255, 255, 255)), (208 * scale, 169 * scale)) # poziom
+    screen.blit(znaki.render(f"{lines:0>3}", False, (255, 255, 255)), (153 * scale, 24 * scale)) # linie
     for i in range(7):
-        screen.blit(znaki.render(f"{stat[i]:0>3}", False, (255, 0, 0)), (49 * scale, 95 * scale + 16 * scale * i)) // statsy
+        screen.blit(znaki.render(f"{stat[i]:0>3}", False, (255, 0, 0)), (49 * scale, 95 * scale + 16 * scale * i)) # statsy
+    paleta = level % 10
     for Y in range(20):
         for X in range(10):
             element = static[Y][X]
-            paleta = level % 10
-            X1, Y1 = 95 * scale + X * scale * 8, 47 * scale + Y * scale * 8 // pozycja w px
+            X1, Y1 = 95 * scale + X * scale * 8, 47 * scale + Y * scale * 8 # pozycja w px
             kolor = pygame.Color(kolory_11(element, paleta))
             if element == 0:
                 pygame.draw.polygon(screen, "black", [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
@@ -129,10 +158,28 @@ while running:
                 pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
                 pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
                 pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
-    
-    pygame.display.flip() // update screen
+    for i in tetromino[jaki_klocek][rotation]:
+        kolor = pygame.Color(kolory_11(jaki_klocek % 3 + 1, paleta))
+        X1, Y1 = pos_x + i[0], pos_y + i[1]
+        kocek = jaki_klocek % 3
+        match kocek:
+            case 0:
+                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 7), (X1 + scale * 2, Y1 + scale * 7)])
+            case 1:
+                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
+            case 2:
+                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
 
-    clock.tick(60.0988) // frame rate
+                
+    pygame.display.flip() # update screen
+
+    clock.tick(60.0988) # frame rate
 
 pygame.quit()
 print(f"Wynik = {score:.0f}")
