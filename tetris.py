@@ -7,7 +7,12 @@ def kolory_11(element, palet):
         return kolory[palet * 2 + 1]
     else:
         return kolory[palet * 2]
-
+def klatki(level):
+    lista = []
+    if level > 30:
+        return 1
+    else:
+        return lista[level]
 tak = True
 while tak:
     try:
@@ -68,6 +73,7 @@ tetromino = [
 ]
 
 klocek = True
+frame = 0
 nastepny = randint(0, 6)
 rotation = 0
 pos_x = 5
