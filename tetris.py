@@ -1,18 +1,30 @@
 from random import randint
 import pygame
 
-def kolory_11(element, palet):
+def podspodem(pos_y, tetromino) -> bool:
+    global static
+    
+def maks(pos_y, tetromino) -> int:
+    maks = 0
+    for i in tetromino:
+        if maks < (pos_y + i[1]):
+            maks = pos_y + i[1]
+    return maks
+
+def kolory_11(element, palet) -> tuple:
     kolory = [(0, 89, 248), (66, 184, 255), (0, 169, 0), (178, 248, 27), (218, 0, 204), (249, 121, 246), (2, 88, 248), (89, 217, 90), (226, 0, 88), (89, 250, 157), (88, 248, 158), (107, 132, 254), (252, 52, 8), (125, 125, 125), (103, 69, 251), (176, 0, 31), (0, 89, 248), (244, 58, 2), (250, 53, 3), (252, 160, 68)]
     if element == 2:
         return kolory[palet * 2 + 1]
     else:
         return kolory[palet * 2]
-def klatki(level):
-    lista = []
-    if level > 30:
+
+def klatki(level) -> int:
+    lista = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1]
+    if level >= 29:
         return 1
     else:
         return lista[level]
+
 tak = True
 while tak:
     try:
@@ -24,12 +36,12 @@ while tak:
             tak = False
         else:
             print("złe dane.")
-wymiary = (256 * N, 240 * N)
+wymiary: tuple = (256 * N, 240 * N)
 pygame.init()
-screen = pygame.display.set_mode(wymiary)
+screen: class = pygame.display.set_mode(wymiary)
 clock = pygame.time.Clock()
-running = True
-znaki = pygame.font.Font("nintendo-nes-font.ttf", (8 * N))
+running: bool = True
+znaki: class = pygame.font.Font("nintendo-nes-font.ttf", (8 * N))
 background = pygame.image.load("background.bmp")
 background = pygame.transform.scale(background, wymiary)
 
@@ -72,18 +84,18 @@ tetromino = [
     ]
 ]
 
-klocek = True
-frame = 0
-nastepny = randint(0, 6)
-rotation = 0
-pos_x = 5
-pos_y = 0
-score = 0
-level = 0
-lines = 0
-stat = [0, 0, 0, 0, 0, 0, 0]
-jaki_klocek = randint(0, 6)
-static = [
+klocek: bool = True
+frame: int = 0
+nastepny: int = randint(0, 6)
+rotation: int = 0
+pos_x: int = 5
+pos_y: int = 0
+score: int = 0
+level: int = 0
+lines: int = 0
+stat: list[int] = [0, 0, 0, 0, 0, 0, 0]
+jaki_klocek: int = randint(0, 6)
+static: list[list[int]] = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -95,10 +107,11 @@ static = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #20
     ]
-soft_drop = False
+soft_drop: bool = False
 while running:
-    A_nacisk = False
-    D_nacisk = False
+    frame += 1
+    A_nacisk: bool = False
+    D_nacisk: bool = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -121,19 +134,21 @@ while running:
         jaki_klocek = nastepny
         nastepny = randint(0, 6)
     nacisk = D_nacisk + A_nacisk * 2
-    match nacisk:
-        case 0:
-            #nic
-        case 1:
-            D_nacisk = False # D
-            pos_x += 1
-        case 2:
-            A_nacisk = False # A
-            pos_x += 1
-        case 3:
-            A_nacisk = False # A + D
-            D_nacisk = False
+    if nacisk == 1:
+        D_nacisk = False # D
+        pos_x += 1
+    elif nacisk == 2:
+        A_nacisk = False # A
+        pos_x += 1
+    elif nacisk == 3:
+        A_nacisk = False # A + D
+        D_nacisk = False
     
+    if frame == klatka():
+        if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) &
+        not podspodem(pos_y, tetromino[jaki_klocek][rotation]):
+            
+
     pos_y += 1
     rotation %= 4
     screen.fill("black")
