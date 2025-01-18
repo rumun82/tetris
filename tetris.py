@@ -1,9 +1,17 @@
 from random import randint
 import pygame
 
-def podspodem(pos_y, tetromino) -> bool:
+def podspodem(pos_x, pos_y, tetromino) -> bool:
     global static
-    
+    leci: bool = True
+    for i in tetromino:
+        if pos_y + i[1] != 19:
+            if static[pos_y + i[1]][pos_x] != 0:
+                leci = False
+        else:
+            leci = False
+    return leci
+
 def maks(pos_y, tetromino) -> int:
     maks = 0
     for i in tetromino:
@@ -146,7 +154,7 @@ while running:
     
     if frame == klatka():
         if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) &
-        not podspodem(pos_y, tetromino[jaki_klocek][rotation]):
+        not podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
             
 
     pos_y += 1
