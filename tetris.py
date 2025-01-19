@@ -155,7 +155,10 @@ while running:
     if frame == klatka():
         if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) &
         not podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
-            
+            pos_y += 1
+        else:
+            for i in tetromino:
+                static[pos_x + i[0]][pos_y + i[1]] = jaki_klocek % 3 + 1
 
     pos_y += 1
     rotation %= 4
