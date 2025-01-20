@@ -6,9 +6,10 @@ def podspodem(pos_x, pos_y, tetromino) -> bool:
     leci: bool = False
     for i in tetromino:
         if pos_y + i[1] != 19:
-            print(type(i), i)
-            if static[pos_y + i[1]][pos_x] != 0:
-                leci = True
+            print(pos_y + i[1], pos_y)
+            if pos_y + i[1] > 0:
+                if static[pos_y + i[1]][pos_x] != 0:
+                    leci = True
         else:
             leci = True
     return leci
@@ -158,9 +159,10 @@ while running:
             pos_y += 1
         else:
             for i in tetromino:
-                static[pos_x + i[0]][pos_y + i[1]] = jaki_klocek % 3 + 1
+                X = i[0]
+                Y = i[1]
+                static[pos_x + X][pos_y + Y] = jaki_klocek % 3 + 1
 
-    pos_y += 1
     rotation %= 4
     screen.fill("black")
     screen.blit(background, (0, 0))
