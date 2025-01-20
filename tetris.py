@@ -3,13 +3,14 @@ import pygame
 
 def podspodem(pos_x, pos_y, tetromino) -> bool:
     global static
-    leci: bool = True
+    leci: bool = False
     for i in tetromino:
         if pos_y + i[1] != 19:
+            print(type(i), i)
             if static[pos_y + i[1]][pos_x] != 0:
-                leci = False
+                leci = True
         else:
-            leci = False
+            leci = True
     return leci
 
 def maks(pos_y, tetromino) -> int:
@@ -26,7 +27,7 @@ def kolory_11(element, palet) -> tuple:
     else:
         return kolory[palet * 2]
 
-def klatki(level) -> int:
+def klatka(level) -> int:
     lista = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1]
     if level >= 29:
         return 1
@@ -46,10 +47,10 @@ while tak:
             print("złe dane.")
 wymiary: tuple = (256 * N, 240 * N)
 pygame.init()
-screen: class = pygame.display.set_mode(wymiary)
+screen = pygame.display.set_mode(wymiary)
 clock = pygame.time.Clock()
 running: bool = True
-znaki: class = pygame.font.Font("nintendo-nes-font.ttf", (8 * N))
+znaki = pygame.font.Font("nintendo-nes-font.ttf", (8 * N))
 background = pygame.image.load("background.bmp")
 background = pygame.transform.scale(background, wymiary)
 
@@ -144,7 +145,7 @@ while running:
     nacisk = D_nacisk + A_nacisk * 2
     if nacisk == 1:
         D_nacisk = False # D
-        pos_x += 1
+        pos_x -= 1
     elif nacisk == 2:
         A_nacisk = False # A
         pos_x += 1
@@ -152,9 +153,8 @@ while running:
         A_nacisk = False # A + D
         D_nacisk = False
     
-    if frame == klatka():
-        if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) &
-        not podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
+    if frame == klatka(level):
+        if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) & podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
             pos_y += 1
         else:
             for i in tetromino:
