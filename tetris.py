@@ -6,7 +6,6 @@ def podspodem(pos_x, pos_y, tetromino) -> bool:
     leci: bool = False
     for i in tetromino:
         if pos_y + i[1] != 19:
-            print(pos_y + i[1], pos_y)
             if pos_y + i[1] > 0:
                 if static[pos_y + i[1]][pos_x] != 0:
                     leci = True
