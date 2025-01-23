@@ -102,9 +102,9 @@ pos_y: int = 0
 score: int = 0
 level: int = 0
 lines: int = 0
-stat: list[int] = [0, 0, 0, 0, 0, 0, 0]
+stat = [0, 0, 0, 0, 0, 0, 0]
 jaki_klocek: int = randint(0, 6)
-static: list[list[int]] = [
+static = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -145,10 +145,10 @@ while running:
     nacisk = D_nacisk + A_nacisk * 2
     if nacisk == 1:
         D_nacisk = False # D
-        pos_x -= 1
+        pos_x += 1
     elif nacisk == 2:
         A_nacisk = False # A
-        pos_x += 1
+        pos_x -= 1
     elif nacisk == 3:
         A_nacisk = False # A + D
         D_nacisk = False
@@ -157,7 +157,7 @@ while running:
         if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) & podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
             pos_y += 1
         else:
-            for i in tetromino:
+            for i in tetromino[jaki_klocek][rotation]:
                 X = i[0]
                 Y = i[1]
                 static[pos_x + X][pos_y + Y] = jaki_klocek % 3 + 1
@@ -193,21 +193,20 @@ while running:
                 pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
     for i in tetromino[jaki_klocek][rotation]:
         kolor = pygame.Color(kolory_11(jaki_klocek % 3 + 1, paleta))
-        X1, Y1 = pos_x + i[0], pos_y + i[1]
+        X1, Y1 = 95 * scale + (pos_x + i[0]) * scale * 8, 47 * scale + (pos_y + i[1]) * scale * 8
         kocek = jaki_klocek % 3
-        match kocek:
-            case 0:
-                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 7), (X1 + scale * 2, Y1 + scale * 7)])
-            case 1:
-                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
-            case 2:
-                pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
-                pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
+        if klocek == 0:
+            pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 2), (X1 + scale * 7, Y1 + scale * 7), (X1 + scale * 2, Y1 + scale * 7)])
+        elif klocek == 1:
+            pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
+        elif klocek == 2:
+            pygame.draw.polygon(screen, kolor, [(X1 + scale, Y1 + scale), (X1 + scale * 8, Y1 + scale), (X1 + scale * 8, Y1 + scale * 8), (X1 + scale, Y1 + scale * 8)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale, Y1 + scale), (X1 + scale * 2, Y1 + scale), (X1 + scale * 2, Y1 + scale * 2), (X1 + scale, Y1 + scale * 2)])
+            pygame.draw.polygon(screen, "white", [(X1 + scale * 2, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 2), (X1 + scale * 4, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 3), (X1 + scale * 3, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 4), (X1 + scale * 2, Y1 + scale * 2)])
 
                 
     pygame.display.flip() # update screen
