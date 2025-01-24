@@ -3,14 +3,14 @@ import pygame
 
 def podspodem(pos_x, pos_y, tetromino) -> bool:
     global static
-    leci: bool = False
+    leci: bool = True
     for i in tetromino:
         if pos_y + i[1] != 19:
             if pos_y + i[1] > 0:
                 if static[pos_y + i[1]][pos_x] != 0:
-                    leci = True
+                    leci = False
         else:
-            leci = True
+            leci = False
     return leci
 
 def maks(pos_y, tetromino) -> int:
@@ -27,12 +27,14 @@ def kolory_11(element, palet) -> tuple:
     else:
         return kolory[palet * 2]
 
-def klatka(level) -> int:
-    lista = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1]
-    if level >= 29:
-        return 1
-    else:
-        return lista[level]
+def klatka(level, soft_drop) -> int:
+    if soft_drop == False:
+        lista = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1]
+        if level >= 29:
+            return 1
+        else:
+            return lista[level]
+    else: return 5
 
 tak = True
 while tak:
@@ -152,8 +154,10 @@ while running:
     elif nacisk == 3:
         A_nacisk = False # A + D
         D_nacisk = False
-    
-    if frame == klatka(level):
+    print(frame, klatka(level, soft_drop))
+    if frame >= klatka(level, soft_drop):
+        frame = 0
+        print(f"{(maks(pos_y, tetromino[jaki_klocek][rotation]) != 19)=}, {podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation])=}")
         if (maks(pos_y, tetromino[jaki_klocek][rotation]) != 19) & podspodem(pos_x, pos_y, tetromino[jaki_klocek][rotation]):
             pos_y += 1
         else:
